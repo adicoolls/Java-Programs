@@ -3,20 +3,26 @@ const User = require("../models/user");
 const router = Router();
 
 router.get("/signin", (req,res) =>{
-    return res.render("signin");
+   return res.render("signin")
 });
 router.get("/signup", (req, res) =>{
     return res.render("signup");
 });
 router.post("/signin", async (req, res) => {
-    // fix spelling and destructuring
     const { email, password } = req.body;
-    const ismatched = await User.matchPassword(email, password);
-    console.log(email, password);
-    console.log("user", User);
-    // redirect or render, not both
-    // assuming you want to redirect on success
-    res.redirect("/");
+   try{
+ // fix spelling and destructuring
+    
+    const token = await User.matchPasswordAndGenerateToken(email, password);
+    
+    return res.cookie("token", token).redirect("/");
+   }catch(error){
+     return res.render("signin",{
+        error:"incorrect email or password",
+     });
+   }
+
+   
 });
 
 router.post("/signup", async(req, res) => {
