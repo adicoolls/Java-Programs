@@ -5,12 +5,12 @@ const { stringify } = require("querystring");
 const UserSchema = mongoose.Schema({
     name : {
         type : String,
-        require : true,
+        required : true,
 
     },
     email :{
         type : String,
-        require:true,
+        required:true,
         unique : true
     },
     salt : {
@@ -19,7 +19,7 @@ const UserSchema = mongoose.Schema({
     },
     password : {
         type : String,
-        require : true
+        required : true
     },
     profileImageURL : {
         type: String,
@@ -31,7 +31,7 @@ const UserSchema = mongoose.Schema({
         default:"USER",
     }
 
-}, {timeStamp : true});
+}, {timeStamps : true});
 
 UserSchema.pre("save", function(){
     const user = this;
@@ -50,10 +50,10 @@ UserSchema.pre("save", function(){
 
 });
 
-UserSchema.static("matchPassword", function(email,password){
-    const user = this.findOne({email});
-    if(!User)throw new error('User not found');
-
+UserSchema.statics.matchPassword, async function(email,password){
+    const user = await this.findOne({email});
+    if(!user)throw new Error('User not found');
+    console.log(user);
     const salt = user.salt;
     const hashedPassword = user.password;
     
@@ -61,8 +61,8 @@ UserSchema.static("matchPassword", function(email,password){
     .update(password)
     .digest("hex");
       if(hashedPassword !== userProvideedHash) throw new Error("user not found");
-    return {...User, password: undefined, salt : undefined};
+    return {...user._doc, password: undefined, salt : undefined};
 
-});
+};
 
 module.exports = mongoose.model("User", UserSchema);

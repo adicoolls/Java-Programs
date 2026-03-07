@@ -8,11 +8,15 @@ router.get("/signin", (req,res) =>{
 router.get("/signup", (req, res) =>{
     return res.render("signup");
 });
-router.post("/signin", async(req,res)=> {
-    const {email, passowrd} = req.body;
-    const ismatched = User.matchPassword(email, password);
-    
-    res.redirect("/").render("signin successfully");
+router.post("/signin", async (req, res) => {
+    // fix spelling and destructuring
+    const { email, password } = req.body;
+    const ismatched = await User.matchPassword(email, password);
+    console.log(email, password);
+    console.log("user", User);
+    // redirect or render, not both
+    // assuming you want to redirect on success
+    res.redirect("/");
 });
 
 router.post("/signup", async(req, res) => {
