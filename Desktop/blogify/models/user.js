@@ -3,21 +3,21 @@ const mongoose = require("mongoose");
 const { stringify } = require("querystring");
 
 const UserSchema = mongoose.Schema({
-    Name : {
+    name : {
         type : String,
         require : true,
 
     },
-    Email :{
+    email :{
         type : String,
         require:true,
         unique : true
     },
-    Salt : {
+    salt : {
         type : String,
       
     },
-    Password : {
+    password : {
         type : String,
         require : true
     },
@@ -25,7 +25,7 @@ const UserSchema = mongoose.Schema({
         type: String,
         default : "/public/images/userprofile.jpg"
     },
-    Role:{
+    role:{
         type: String,
         enum : ["USER", "ADMIN"],
         default:"USER",
@@ -33,19 +33,19 @@ const UserSchema = mongoose.Schema({
 
 }, {timeStamp : true});
 
-UserSchema.pre("save", function(next){
+UserSchema.pre("save", function(){
     const user = this;
 
-    if(!this.isModified("password")) return;
+    if(!this.isModified("password")) return ;
 
-    const salt = randomBytes(16).toString();
+    const salt = randomBytes(16).toString("hex");
     const hashedPassword = createHmac("sha256", salt)
      .update(this.password)
      .digest("hex");
 
     this.salt = salt;
     this.password = hashedPassword;
-    next();
+    
 
 
 })
