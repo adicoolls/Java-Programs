@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const UserRoute = require("./routes/user");
+const BlogRoute = require("./routes/blog");
 
 const { checkForAuthenticationCookie } = require("./middlewares/authentication");
 const app = express();
@@ -17,6 +18,7 @@ app.set("view engine", "ejs");
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 app.use("/user", UserRoute);
+app.use("/blog", BlogRoute);
 
 app.use(cookieParser());
 app.use(checkForAuthenticationCookie("token"));
