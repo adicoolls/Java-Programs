@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const UserRoute = require("./routes/user");
-const { error } = require("console");
+
 const { checkForAuthenticationCookie } = require("./middlewares/authentication");
 const app = express();
 const PORT = 8000;
@@ -21,9 +21,7 @@ app.use("/user", UserRoute);
 app.use(cookieParser());
 app.use(checkForAuthenticationCookie("token"));
 app.get("/", (req, res) =>{
-
-    res.render("home");
-    user : req.user;
+    res.render("home", { user: req.user });
 })
 
 app.listen(PORT, () => console.log(`server started at ${PORT}`));
