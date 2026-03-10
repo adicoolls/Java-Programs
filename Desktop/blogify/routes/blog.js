@@ -36,6 +36,7 @@ router.post("/", upload.single("coverImage"), async (req, res) => {
    });
 
    return res.redirect(`/blog/${newBlog._id}`);
+   //return res.redirect("/");
 });
 
 router.get("/:id", async (req, res) => {
