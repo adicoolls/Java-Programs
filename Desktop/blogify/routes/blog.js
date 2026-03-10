@@ -21,13 +21,32 @@ router.get("/add-new", (req, res) => {
     });
 });
 
-router.post("/", upload.single("coverImage"),async (req, res) => {
-   const {title , body} = req.body 
- const newBlog = await  blog.create({
-    body, title,
-    createdBy : req.user._id,
-    coverImageURL : `/uploads/${req.file.filename}`
+router.post("/", upload.single("coverImage"), async (req, res) => {
+   const { title, body } = req.body;
+
+   if (!req.user) {
+      return res.redirect("/");
+   }
+        console.log("route hit");
+   const newBlog = await blog.create({
+      title,
+      body,
+      createdBy: req.user._id,
+      coverImageURL: req.file ? `/uploads/${req.file.filename}` : null
    });
+
    return res.redirect(`/blog/${newBlog._id}`);
 });
+
+router.get("/:id", async (req, res) => {
+   const blogPost = await blog.findById(req.params.id).populate("createdBy");
+   if (!blogPost) {
+      return res.status(404).render("404", { error: "Blog not found" });
+   }
+   return res.render("blog", {
+      user: req.user,
+      blog: blogPost,
+   });
+});
+
 module.exports = router;
